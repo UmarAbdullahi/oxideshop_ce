@@ -158,8 +158,27 @@ class SystemEventHandler
     public function onShopStart()
     {
         $this->validateOnline();
-
         $this->validateOffline();
+        $this->validateMasterSlaveConnection();
+    }
+
+    private function validateMasterSlaveConnection()
+    {
+        $database = \OxidEsales\Eshop\Core\DatabaseProvider::getDb();
+
+        if ($database->isMasterSlaveConnection()
+            && !$this->isMasterSlaveLicense()
+        ) {
+            $database->forceMasterConnection();
+        }
+    }
+
+    private function isMasterSlaveLicense()
+    {
+        $config = \OxidEsales\Eshop\Core\Registry::getConfig();
+        $isMasterSlaveLicense = $config->getSerial(true)->isFlagEnabled('master_slave');
+
+        return $isMasterSlaveLicense;
     }
 
     /**
