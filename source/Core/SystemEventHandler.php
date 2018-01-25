@@ -166,7 +166,8 @@ class SystemEventHandler
     {
         $database = \OxidEsales\Eshop\Core\DatabaseProvider::getDb();
 
-        if ($database->isMasterSlaveConnection()
+        if (property_exists($database, 'isMasterSlaveConnection')
+            && $database->isMasterSlaveConnection()
             && !$this->isMasterSlaveLicense()
         ) {
             $database->forceMasterConnection();
