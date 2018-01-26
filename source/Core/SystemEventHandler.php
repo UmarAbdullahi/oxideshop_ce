@@ -172,6 +172,13 @@ class SystemEventHandler
         ) {
             $database->forceMasterConnection();
         }
+
+        if (property_exists($database, 'isMasterSlaveConnection')
+            && $database->isMasterSlaveConnection()
+            && $this->isMasterSlaveLicense()
+        ) {
+            $database->forceSlaveConnection();
+        }
     }
 
     private function isMasterSlaveLicense()
